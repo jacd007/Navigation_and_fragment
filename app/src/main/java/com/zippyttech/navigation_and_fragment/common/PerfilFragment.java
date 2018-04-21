@@ -125,18 +125,7 @@ public class PerfilFragment extends Fragment implements GoogleApiClient.OnConnec
     @Override
     public void onStart() {
         super.onStart();
-    /*    OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
-        if (opr.isDone()){
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        }else {
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }*/
+
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
