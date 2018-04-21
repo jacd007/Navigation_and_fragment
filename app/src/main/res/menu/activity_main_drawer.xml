@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_o1"
+            android:icon="@drawable/ic_perfil"
+            android:title="Mi perfil" />
+        <item
+            android:id="@+id/nav_o2"
+            android:icon="@drawable/ic_newspaper"
+            android:title="Noticias" />
+        <item
+            android:id="@+id/nav_o3"
+            android:icon="@drawable/ic_dolar_today"
+            android:title="DolaToday" />
+        <item
+            android:id="@+id/nav_o4"
+            android:icon="@drawable/ic_sunny"
+            android:title="Clima" />
+        <item
+            android:id="@+id/nav_o5"
+            android:icon="@drawable/ic_daily_calendar"
+            android:title="Agenda" />
+    </group>
+
+    <item android:title="Otras operaciones con BD">
+        <menu>
+            <item
+                android:id="@+id/nav_o6"
+                android:icon="@drawable/ic_go"
+                android:title="Delete and Update" />
+        </menu>
+    </item>
+
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_go"
+                android:title="Cerrar sesión" />
+            <item
+
+                android:id="@+id/nav_exit"
+                android:icon="@drawable/ic_go"
+                android:title="Salir. (Sin cerrar sesión)" />
+        </menu>
+    </item>
+
+</menu>

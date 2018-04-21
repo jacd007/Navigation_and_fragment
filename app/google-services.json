@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "210412430753",
+    "firebase_url": "https://navigationtoday.firebaseio.com",
+    "project_id": "navigationtoday",
+    "storage_bucket": "navigationtoday.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210412430753:android:a8fb9754cda5768f",
+        "android_client_info": {
+          "package_name": "com.zippyttech.navigation_and_fragment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210412430753-27apedidoct6ic7rotql70sce528u7ej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zippyttech.navigation_and_fragment",
+            "certificate_hash": "6faecfbfa4ab5c314bbb0b0b7bb54f43482bd5b7"
+          }
+        },
+        {
+          "client_id": "210412430753-rttfmshupclu7bfjjk5i0iphqslrsa4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGBwONxxuCKxnI8gbA4RaT-1jg7OZzMwc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210412430753-rttfmshupclu7bfjjk5i0iphqslrsa4o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
