@@ -148,6 +148,7 @@ public class WeatherFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             String  resp = call.callGet("http://api.openweathermap.org/data/2.5/forecast?id=524901&units=metric&APPID=44d8a60f7707ec918da8c1123c521ab1");
+          // String resp = call.callGet("http://api.openweathermap.org/data/2.5/weather?lat=7.7560392&lon=-72.2310149&APPID=44d8a60f7707ec918da8c1123c521ab1");
             return resp;
         }
 
@@ -163,6 +164,9 @@ public class WeatherFragment extends Fragment {
                     JSONObject item = new JSONObject(resp);
                     JSONArray list = item.getJSONArray("list");
                     clima =  String.valueOf( list.getJSONObject(0).getJSONObject("main").getDouble("temp") );
+
+                  //  clima = String.valueOf( item.getJSONObject("main").getDouble("temp") );
+
                     weather.setText("Temperatura es de: " + clima);
 
 
