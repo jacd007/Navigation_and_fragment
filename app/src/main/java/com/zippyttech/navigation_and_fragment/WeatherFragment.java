@@ -37,7 +37,7 @@ public class WeatherFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private TextView weather;
+    private TextView weather,tiempo;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -90,6 +90,7 @@ public class WeatherFragment extends Fragment {
         // Inflate the layout for this fragment
 
         weather = (TextView) view.findViewById(R.id.weather);
+        tiempo = (TextView) view.findViewById(R.id.time);
 
         return view;
     }
