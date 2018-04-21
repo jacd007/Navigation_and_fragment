@@ -139,6 +139,8 @@ public class NavigationActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("weather",false);
+        editor.commit();
 
         if (id == R.id.nav_o1) {
            item.setChecked(true);

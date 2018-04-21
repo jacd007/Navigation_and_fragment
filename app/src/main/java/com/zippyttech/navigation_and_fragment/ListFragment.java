@@ -2,6 +2,7 @@ package com.zippyttech.navigation_and_fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,7 +43,6 @@ public class ListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
     private Context context;
 
     private RecyclerView recyclerView;
@@ -87,6 +87,8 @@ public class ListFragment extends Fragment {
 
     }
 
+
+
     public void setThisFragment(){
         ((DrawerLocker) getActivity()).setDrawerEnabled(true);
 
@@ -101,6 +103,7 @@ public class ListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_list, container, false);
      recyclerView = v.findViewById(R.id.lista);
+
         return v;
 
 
@@ -108,10 +111,7 @@ public class ListFragment extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
 
-        }
     }
 
 
@@ -125,7 +125,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
     /**
@@ -152,7 +152,7 @@ public class ListFragment extends Fragment {
             this.call = new ApiCall(context);
             this.UPDATE=upd;
             dialog = new ProgressDialog(context);
-            dialog.setMessage("Cargando data");
+            dialog.setMessage("Cargando data de LA NACIÓN");
             dialog.setIndeterminate(true);
             dialog.show();
         }
@@ -164,7 +164,7 @@ public class ListFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            String resp = call.callGet("https://lanacionweb.com/wp-json/wp/v2/posts");
+            String  resp = call.callGet("https://lanacionweb.com/wp-json/wp/v2/posts");
             return resp;
         }
 

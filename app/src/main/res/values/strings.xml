@@ -114,4 +114,6 @@
     <string name="not_revoke">No se pudo revocar el acceso.</string>
     <string name="default_weather">El clima es:</string>
     <string name="default_calendar">Este es el calendario</string>
+    <string name="api_key_weather">44d8a60f7707ec918da8c1123c521ab1</string>
+
 </resources>
