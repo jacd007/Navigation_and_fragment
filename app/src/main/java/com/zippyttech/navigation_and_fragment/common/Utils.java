@@ -171,6 +171,47 @@ public abstract class Utils {
     }
 
 
+    public static String RegexReplaceSimbol(String values){
+        String   regex = "/^<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)$/";
 
 
+        if (values!=null){
+                values.replaceAll(regex, "");
+            return values;
+        }
+        else return null;
+
+
+    }
+    public static String ReplaceSimbol(String values){
+        String   regex = "/^<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)$/";
+
+
+        if (values!=null){
+            values.replace("<p>", "")
+                    .replace("</p>", "")
+                    .replace("<a>", "")
+                    .replace("</a>", "")
+                    .replace("/","")
+                    .replace("[&hellip;]","")
+                    .replace("</p>","")
+                    .replace("&#8220;","")
+                    .replace("&#8221;","");
+            return values;
+        }
+        else return null;
+
+
+    }
+
+    public static String cientificMethod(float rep) {
+        String aux="",r;
+        double val=0;
+        if (rep>0 && rep<1000) aux="";
+        if (rep>1000 && rep<1000000)aux="k";  val=rep/1000;
+        if (rep>0 && rep<1000) aux="M";  val=rep/1000000;
+        if (rep>0 && rep<1000) aux="G";  val=rep/1000000000;
+
+        return (""+ aux +""+ val);
+    }
 }

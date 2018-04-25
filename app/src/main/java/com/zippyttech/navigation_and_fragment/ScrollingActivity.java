@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zippyttech.navigation_and_fragment.common.Utils;
+
 public class ScrollingActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView text, titleToolbar;
 
@@ -33,14 +35,19 @@ public class ScrollingActivity extends AppCompatActivity implements View.OnClick
 
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
-        String content = intent.getStringExtra("content")
-                .replace("<p>","").replace("</p>","")
-                .replace("/","");
+
+      String content = intent.getStringExtra("content")
+              /*  .replace("<p>","")
+                .replace("</p>","")
+                .replace("/","")
+                .replace("[&hellip;]","")
+                .replace("</p>","")*/;
+       // String content = Utils.RegexReplaceSimbol(intent.getStringExtra("content"));
         text = (TextView) findViewById(R.id.text);
-        text.setText(content);
+        text.setText(Utils.ReplaceSimbol(content));
         getSupportActionBar().setTitle("");
         titleToolbar.setTypeface(null, Typeface.BOLD_ITALIC);
-        titleToolbar.setText(title);
+        titleToolbar.setText(Utils.ReplaceSimbol(title));
 
     }
 

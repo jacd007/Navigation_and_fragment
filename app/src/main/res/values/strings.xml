@@ -115,5 +115,9 @@
     <string name="default_weather">El clima es:</string>
     <string name="default_calendar">Este es el calendario</string>
     <string name="api_key_weather">44d8a60f7707ec918da8c1123c521ab1</string>
+    <string name="Diferencial_VEN_COL">Razón de cambio:</string>
+    <string name="deafault_float">0.000 000</string>
+    <string name="View_resp_calc">Resultado: 0. 000 000</string>
+    <string name="default_chance">El peso Colombiano</string>
 
 </resources>

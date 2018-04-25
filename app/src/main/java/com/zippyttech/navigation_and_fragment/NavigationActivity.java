@@ -291,8 +291,8 @@ String provider = settings.getString("providerLogin","");
             case 2:
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                OtroFragment otroFragment = new OtroFragment();
-                fragmentTransaction.replace(R.id.content_frame, otroFragment);
+                DolarFragment dolarFragment = new DolarFragment();
+                fragmentTransaction.replace(R.id.content_frame, dolarFragment);
                 fragmentTransaction.commit();
                 break;
             case 3:

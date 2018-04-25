@@ -9,8 +9,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.zippyttech.navigation_and_fragment.common.ApiCall;
+import com.zippyttech.navigation_and_fragment.common.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,24 +30,29 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OtroFragment.OnFragmentInteractionListener} interface
+ * {@link DolarFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link OtroFragment#newInstance} factory method to
+ * Use the {@link DolarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OtroFragment extends Fragment {
+public class DolarFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private TextView resultado,cambio,dolar;
+    private Button aceptar;
+    private RadioButton check_bs_ps,check_ps_bs;
+    private EditText ref;
+    private RadioGroup radio;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public OtroFragment() {
+
+    public DolarFragment() {
         // Required empty public constructor
     }
 
@@ -53,8 +65,8 @@ public class OtroFragment extends Fragment {
      * @return A new instance of fragment OtroFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OtroFragment newInstance(String param1, String param2) {
-        OtroFragment fragment = new OtroFragment();
+    public static DolarFragment newInstance(String param1, String param2) {
+        DolarFragment fragment = new DolarFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -82,15 +94,24 @@ public class OtroFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v=inflater.inflate(R.layout.fragment_dolar, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dolar, container, false);
+        //TODO: instances
+        resultado = (TextView) v.findViewById(R.id.view_text_final);
+        dolar = (TextView) v.findViewById(R.id.statusDolar);
+        cambio = (TextView) v.findViewById(R.id.cambio_ref);
+        aceptar = (Button) v.findViewById(R.id.aceptar);
+        check_bs_ps = (RadioButton) v.findViewById(R.id.check_bs_ps);
+        check_ps_bs = (RadioButton) v.findViewById(R.id.check_ps_bs);
+        ref = (EditText) v.findViewById(R.id.editText_ref);
+        radio = (RadioGroup) v.findViewById(R.id.radio);
+        aceptar.setOnClickListener(this);
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     @Override
@@ -103,6 +124,24 @@ public class OtroFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View view) {
+        float refer = Float.parseFloat(String.valueOf(cambio.getText())),
+                values = Float.parseFloat(String.valueOf(ref.getText())),
+                rep=0;
+
+                    if (check_bs_ps.isChecked())
+                        rep = values * refer;
+
+                    if (check_ps_bs.isChecked()){
+                        if (refer!=0)  rep = values / refer;
+                        else rep=0;
+                    }
+
+                   String c= Utils.cientificMethod(rep);
+                resultado.setText(""+rep);
     }
 
     /**
@@ -128,7 +167,7 @@ public class OtroFragment extends Fragment {
             this.call = new ApiCall(context);
             this.UPDATE=upd;
             dialog = new ProgressDialog(context);
-            dialog.setMessage("Cargando data");
+            dialog.setMessage("Cargando data de DolarToday");
             dialog.setIndeterminate(true);
             dialog.show();
         }
@@ -140,7 +179,7 @@ public class OtroFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            String resp = call.callGet("https://lanacionweb.com/wp-json/wp/v2/posts");
+            String resp = call.callGet("https://s3.amazonaws.com/dolartoday/data.json");
             return resp;
         }
 
@@ -151,8 +190,8 @@ public class OtroFragment extends Fragment {
             super.onPostExecute(resp);
             dialog.dismiss();
             try {
-                JSONArray array = new JSONArray(resp);
-                List<Noticia> noticiaList = new ArrayList<>();
+                  JSONArray array = new JSONArray(resp);
+             /*   List<Noticia> noticiaList = new ArrayList<>();
 
 
 
@@ -162,9 +201,9 @@ public class OtroFragment extends Fragment {
                     noticia.setTitulo(item.getJSONObject("title").getString("rendered"));
                     noticiaList.add(noticia);
 
-                }
+                }*/
 
-                refreshCustomerList(noticiaList);
+               // refreshCustomerList(noticiaList);
 
             } catch (JSONException e) {
                 e.printStackTrace();
