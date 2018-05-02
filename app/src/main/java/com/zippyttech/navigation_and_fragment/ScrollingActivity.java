@@ -35,19 +35,13 @@ public class ScrollingActivity extends AppCompatActivity implements View.OnClick
 
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
-
-      String content = intent.getStringExtra("content")
-              /*  .replace("<p>","")
-                .replace("</p>","")
-                .replace("/","")
-                .replace("[&hellip;]","")
-                .replace("</p>","")*/;
-       // String content = Utils.RegexReplaceSimbol(intent.getStringExtra("content"));
+        //String content = intent.getStringExtra("content");
+        String content = Utils.ReplaceSimbol(intent.getStringExtra("content"));
         text = (TextView) findViewById(R.id.text);
-        text.setText(Utils.ReplaceSimbol(content));
+        text.setText(content);
         getSupportActionBar().setTitle("");
         titleToolbar.setTypeface(null, Typeface.BOLD_ITALIC);
-        titleToolbar.setText(Utils.ReplaceSimbol(title));
+        titleToolbar.setText(title);
 
     }
 

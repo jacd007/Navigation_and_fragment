@@ -183,7 +183,8 @@ public class ListFragment extends Fragment {
                 for(int i=0; i<array.length(); i++) {
                     JSONObject item = array.getJSONObject(i);
                     Noticia noticia = new Noticia();
-                    String c = item.getJSONObject("excerpt").getString("rendered").replace("<p>","").replace("<strong>","").replace("&#8220","\"").replace("&#8221","\"");
+                   // item.getJSONObject("content").getString("rendered")/*.replace("<p>","").replace("<strong>","").replace("&#8220","\"").replace("&#8221","\"")*/;
+                    String c = Utils.RegexReplaceSimbol(item.getJSONObject("content").getString("rendered"));
                     noticia.setCodigo(String.valueOf(item.getInt("id")));
                     noticia.setTitulo(item.getJSONObject("title").getString("rendered"));
                     noticia.setContenido(c);

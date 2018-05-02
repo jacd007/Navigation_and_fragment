@@ -174,7 +174,11 @@ public class NavigationActivity extends AppCompatActivity
             getSupportActionBar().setTitle("El Clima");
             drawer.closeDrawer(GravityCompat.START);
             setFragment(5);
-        } else if (id == R.id.nav_logout) { /** CLEAR SHARED_PREFERENTS */
+        } else if (id == R.id.nav_o6) {
+                startService(new Intent(this, SyncService.class));
+        }else if (id == R.id.nav_o7) {
+                stopService(new Intent(this, SyncService.class));
+        }else if (id == R.id.nav_logout) { /** CLEAR SHARED_PREFERENTS */
 
           //  logOut();
            // revoke();
