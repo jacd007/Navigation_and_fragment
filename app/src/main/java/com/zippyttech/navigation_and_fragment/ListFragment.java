@@ -13,7 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.zippyttech.navigation_and_fragment.Models.Noticia;
 import com.zippyttech.navigation_and_fragment.common.ApiCall;
 import com.zippyttech.navigation_and_fragment.common.Utils;
 
@@ -49,6 +51,10 @@ public class ListFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private RecyclerAdapter adapter;
 
+    public static final String SHARED_KEY ="shared_key";
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
+    NoticiasDB noticiasDB;
 
 
     public ListFragment() {
@@ -85,8 +91,14 @@ public class ListFragment extends Fragment {
 
 
 
-    }
+        noticiasDB = new NoticiasDB(this);
+        refreshCustomerList(noticiasDB.getList());
 
+        ArrayList<Noticia> lista_noticia= null;
+
+
+
+    }
 
 
     public void setThisFragment(){
@@ -104,6 +116,18 @@ public class ListFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_list, container, false);
      recyclerView = v.findViewById(R.id.lista);
 
+        settings = this.getActivity().getSharedPreferences(SHARED_KEY,0);
+        editor = settings.edit();
+
+        if(settings.getBoolean("banderadb",false)){
+            refreshCustomerList(noticiasDB.getList()); ;
+            Toast.makeText(this.getContext(),"Consultando BD...",Toast.LENGTH_SHORT).show();
+        }
+        else{
+           GetData getData = new GetData(this.getContext(), 0);
+            getData.execute();
+            Toast.makeText(this.getContext(),"Consultando Servidor...",Toast.LENGTH_SHORT).show();
+        }
         return v;
 
 
@@ -196,14 +220,14 @@ public class ListFragment extends Fragment {
                     noticiaList.add(noticia);
 
                 }
-            /*  noticiasDB.insertarNoticias(noticiaList);
+              noticiasDB.insertarNoticias(noticiaList);
                 editor.putBoolean("banderadb",true);
                 editor.commit();
-                if(UPDATE==0)*/
-                    refreshCustomerList(noticiaList);
-              /*  else
+                if(UPDATE==0)
+                   refreshCustomerList(noticiaList);
+                else
                     adapter.changeDataItem(noticiasDB.getList());
- */
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

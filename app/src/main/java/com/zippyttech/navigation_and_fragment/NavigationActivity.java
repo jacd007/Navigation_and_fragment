@@ -11,6 +11,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +33,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
+import com.zippyttech.navigation_and_fragment.Models.Noticia;
 import com.zippyttech.navigation_and_fragment.common.PerfilFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,  DrawerLocker,ListFragment.OnFragmentInteractionListener, GoogleApiClient.OnConnectionFailedListener {
@@ -44,7 +50,7 @@ public class NavigationActivity extends AppCompatActivity
     private TextView navUserName,navUserEmail;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-    //  public View view;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,22 +68,23 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         navUserName = (TextView) findViewById(R.id.nav_user_name);
         navUserEmail = (TextView) findViewById(R.id.nav_email_user);
        settings = getSharedPreferences(SHARED_KEY,0);
         editor = settings.edit();
 
-
         setFragment(0);
-
-          // FirebaseAuth
 
         this.googleApiClient = new GoogleApiClient
                 .Builder(this).enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API).build();
 
+
+
+
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -175,9 +182,7 @@ public class NavigationActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             setFragment(5);
         } else if (id == R.id.nav_o6) {
-                startService(new Intent(this, SyncService.class));
-        }else if (id == R.id.nav_o7) {
-                stopService(new Intent(this, SyncService.class));
+               // startService(new Intent(this, SyncService.class));
         }else if (id == R.id.nav_logout) { /** CLEAR SHARED_PREFERENTS */
 
           //  logOut();
@@ -189,9 +194,6 @@ public class NavigationActivity extends AppCompatActivity
 
             Toast.makeText(this, "Exit no disponible", Toast.LENGTH_SHORT).show();
         }
-
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -241,7 +243,7 @@ String provider = settings.getString("providerLogin","");
     public void onFragmentInteraction(Uri uri) {
 
     }
-//*
+
     private void goLogInScreen() {
         Intent intent = new Intent(this,LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -261,19 +263,6 @@ String provider = settings.getString("providerLogin","");
         });
     }
 
-   /* public void revoke(View view){
-        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()){
-                    goLogInScreen();
-                }else {
-                    Toast.makeText(getApplicationContext(), R.string.not_revoke, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }*/
-//*/
     public void setFragment(int position) {
         android.support.v4.app.FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
@@ -334,8 +323,5 @@ String provider = settings.getString("providerLogin","");
 
     }
 
-   /* public void setInformationUser(){
-        navUserName.setText(editor.);
-    }*/
 
 }

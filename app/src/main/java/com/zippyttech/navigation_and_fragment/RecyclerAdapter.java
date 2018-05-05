@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.zippyttech.navigation_and_fragment.Models.Noticia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +106,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
         this.Actividad=ap;
 
     }
+
+   /* public RecyclerAdapter(List<Noticia> listado, NavigationActivity c, NavigationActivity ap) {
+
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override

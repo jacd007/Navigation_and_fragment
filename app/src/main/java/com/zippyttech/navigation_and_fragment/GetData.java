@@ -12,6 +12,10 @@ public class GetData extends AsyncTask<String,String,String> {
 
     }
 
+   /* public GetData(NavigationActivity navigationActivity, int i) {
+
+    }*/
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();

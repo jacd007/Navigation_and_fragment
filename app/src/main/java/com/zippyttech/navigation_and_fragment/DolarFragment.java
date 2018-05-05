@@ -183,27 +183,12 @@ public class DolarFragment extends Fragment implements View.OnClickListener {
             return resp;
         }
 
-
-
         @Override
         protected void onPostExecute(String resp) {
             super.onPostExecute(resp);
             dialog.dismiss();
             try {
                   JSONArray array = new JSONArray(resp);
-             /*   List<Noticia> noticiaList = new ArrayList<>();
-
-
-
-                for(int i=0; i<array.length(); i++) {
-                    JSONObject item = array.getJSONObject(i);
-                    Noticia noticia = new Noticia();
-                    noticia.setTitulo(item.getJSONObject("title").getString("rendered"));
-                    noticiaList.add(noticia);
-
-                }*/
-
-               // refreshCustomerList(noticiaList);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -211,11 +196,5 @@ public class DolarFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void refreshCustomerList(List<Noticia> noticiaList) {
-      /*  if (noticiaList != null) {
-            layoutManager = new LinearLayoutManager(getContext());
-            adapter = new RecyclerAdapter(noticiaList,getContext(), (AppCompatActivity) getActivity());
-        }*/
-    }
 
 }

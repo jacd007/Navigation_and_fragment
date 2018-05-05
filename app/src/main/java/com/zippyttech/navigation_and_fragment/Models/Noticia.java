@@ -1,7 +1,7 @@
-package com.zippyttech.navigation_and_fragment;
+package com.zippyttech.navigation_and_fragment.Models;
 
 /**
- * Created by zippyttech on 28/03/18.
+ * Created by zippyttech on 05/05/18.
  */
 
 public class Noticia {
@@ -70,4 +70,5 @@ public class Noticia {
     public  String getFecha(){return  fecha;}
 
     public void setFecha(String fecha) { this.fecha = fecha;}
+
 }

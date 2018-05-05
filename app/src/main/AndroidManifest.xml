@@ -3,6 +3,8 @@
     package="com.zippyttech.navigation_and_fragment">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission." />
 
     <application
@@ -54,6 +56,16 @@
             android:name=".SyncService"
             android:enabled="true"
             android:exported="true" />
+
+        <receiver
+            android:name=".common.NeedReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>
