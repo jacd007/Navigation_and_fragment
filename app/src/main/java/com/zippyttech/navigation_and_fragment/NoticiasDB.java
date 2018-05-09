@@ -87,7 +87,12 @@ public class NoticiasDB {
      * Insert NoticiasDB*/
     public void insertContenido (com.zippyttech.navigation_and_fragment.Models.Noticia noticia){
         db.execSQL("INSERT INTO Noticia (codigo, titulo, contenido, fecha, imagen) "
-                + "VALUES (" + noticia.getCodigo() + ", '" + noticia.getTitulo() +"', '" + noticia.getContenido() +"', '" + noticia.getFecha() +"', '" + noticia.getImagen() +"')");
+                + "VALUES (" + noticia.getCodigo()
+                + ", '"  + noticia.getTitulo()
+                + "', '" + noticia.getContenido()
+                + "', '" + noticia.getFecha()
+                + "', '" + noticia.getImagen()
+                + "')");
         //   return;
     }
 

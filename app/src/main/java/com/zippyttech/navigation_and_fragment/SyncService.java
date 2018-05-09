@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,20 +20,44 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.zippyttech.navigation_and_fragment.Models.Noticia;
+import com.zippyttech.navigation_and_fragment.common.ApiCall;
+import com.zippyttech.navigation_and_fragment.common.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
 
 public class SyncService extends Service {
     private final int TIME_SYNC = 5000;
     private ProgressDialog dialog;
+
+    public static final String SHARED_KEY ="shared_key";
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
+    NoticiasDB noticiasDB;
+
     public SyncService() {
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(TAG, "Servicio creado...");
+        Log.i(TAG, "Creando servicio...");
 
+    }
+
+    private void sendBroadCast(Context context) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("NOMBRE_DE_NUESTRA_ACTION");
+        broadcastIntent.putExtra("parameter", "value");
+        context.sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -41,17 +66,10 @@ public class SyncService extends Service {
         Toast.makeText(SyncService.this, "Sync's Service start!", Toast.LENGTH_SHORT).show();
 
         try{
-
+                sendBroadCast(this);
             hilo hil = new hilo(this);
             hil.execute();
-           /* thread.start();
 
-            new Handler().postDelayed(new Runnable(){
-                public void run(){
-                    Toast.makeText(SyncService.this, "wait "+TIME_SYNC/1000 + "seg...", Toast.LENGTH_SHORT).show();
-                }
-            }, TIME_SYNC);
-**/
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -82,7 +100,7 @@ public class SyncService extends Service {
     try {
         for (int i = 0; i < 10; i++) {
             publishProgress(strings);
-            sleep(3000);
+            sleep(5000);
         }
     }
     catch (Exception e){
@@ -96,22 +114,71 @@ public class SyncService extends Service {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-
+        //    noticiasDB.getList();
             throudNotificacion();
 
-         //   Toast.makeText(context, "servicio", Toast.LENGTH_SHORT).show();
         }
     }
+/*
+    public class GetData extends AsyncTask<String,String,String> {
+        private ApiCall call;
+        public GetData(Context context){
+            this.call = new ApiCall(context);
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String  resp = call.callGet("https://lanacionweb.com/wp-json/wp/v2/posts");
+            return resp;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String resp) {
+            super.onPostExecute(resp);
+            dialog.dismiss();
+            try {
+                JSONArray array = new JSONArray(resp);
+                List<Noticia> noticiaList = new ArrayList<>();
+
+
+
+                for(int i=0; i<array.length(); i++) {
+                    JSONObject item = array.getJSONObject(i);
+                    Noticia noticia = new Noticia();
+                    // String ;
+                    String idNotification = String.valueOf(item.getInt("id")),
+                           contenidoNotification = item.getJSONObject("content").getString("rendered").substring(0,50),
+                           tituloNotification = item.getJSONObject("title").getString("rendered").substring(0,20);
+
+                }
+                noticiasDB.insertarNoticias(noticiaList);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+*/
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void throudNotificacion(){
+
         Intent intent = new Intent(this, SyncNotification.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
         Uri sonido = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         // Build notification
         // Actions are just fake
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("NOTIFICACION")
+                .setContentTitle("NOTIFICACION ")
                 .setContentText("Esta es una notificacion").setSmallIcon(R.drawable.ic_stat_sync)
                 .setContentIntent(pIntent)
                 .setSound(sonido)

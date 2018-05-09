@@ -1,10 +1,20 @@
 package com.zippyttech.navigation_and_fragment;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -50,6 +60,7 @@ public class NavigationActivity extends AppCompatActivity
     private TextView navUserName,navUserEmail;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    private IntentFilter myFilter;
 
 
     @Override
@@ -140,6 +151,8 @@ public class NavigationActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -183,6 +196,8 @@ public class NavigationActivity extends AppCompatActivity
             setFragment(5);
         } else if (id == R.id.nav_o6) {
                // startService(new Intent(this, SyncService.class));
+            Notificacion();
+
         }else if (id == R.id.nav_logout) { /** CLEAR SHARED_PREFERENTS */
 
           //  logOut();
@@ -237,6 +252,34 @@ String provider = settings.getString("providerLogin","");
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+    private BroadcastReceiver myReceiver;
+    @Override
+    protected void onResume() {
+        myFilter = new IntentFilter();
+        myFilter.addAction("es.androcode.android.mybroadcast");
+        myReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String myParam = intent.getExtras().getString("parameter");
+                if (myParam != null) {
+                    //Aquí ejecutais el método que necesiteis, por ejemplo actualizar //el número de notificaciones recibidas
+                    Toast.makeText(context, "VER..... "+myParam, Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        registerReceiver(myReceiver, myFilter);
+
+    super.onResume();
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(myReceiver);
+        super.onPause();
     }
 
     @Override
@@ -323,5 +366,25 @@ String provider = settings.getString("providerLogin","");
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void Notificacion(){
+
+        Intent intent = new Intent(this, NewMessageNotification.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+        Uri sonid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        // Build notification
+        // Actions are just fake
+        Notification notif = new Notification.Builder(this)
+                .setContentTitle("NOTIFICACION x ")
+                .setContentText("Este es el contenido de una notificacion").setSmallIcon(R.drawable.ic_dolar_today)
+                .setContentIntent(pIntent)
+                .setSound(sonid)
+                .build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // hide the notification after its selected
+        notif.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(0, notif);
+    }
 
 }

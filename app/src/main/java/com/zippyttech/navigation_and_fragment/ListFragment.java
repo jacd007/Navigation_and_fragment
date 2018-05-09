@@ -2,6 +2,7 @@ package com.zippyttech.navigation_and_fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -121,16 +122,20 @@ public class ListFragment extends Fragment {
 
         if(settings.getBoolean("banderadb",false)){
             refreshCustomerList(noticiasDB.getList()); ;
-            Toast.makeText(this.getContext(),"Consultando BD...",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getContext(),"Consultando Base de Datos...",Toast.LENGTH_SHORT).show();
         }
         else{
            GetData getData = new GetData(this.getContext(), 0);
             getData.execute();
+           // startService(new Intent(this.getContext(), SyncService.class));
             Toast.makeText(this.getContext(),"Consultando Servidor...",Toast.LENGTH_SHORT).show();
         }
+
+//
+//
+//       context.startService(new Intent(this.getContext(), SyncService.class));
+
         return v;
-
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -207,16 +212,14 @@ public class ListFragment extends Fragment {
                 for(int i=0; i<array.length(); i++) {
                     JSONObject item = array.getJSONObject(i);
                     Noticia noticia = new Noticia();
-                   // item.getJSONObject("content").getString("rendered")/*.replace("<p>","").replace("<strong>","").replace("&#8220","\"").replace("&#8221","\"")*/;
-                    String c = Utils.RegexReplaceSimbol(item.getJSONObject("content").getString("rendered"));
+                   // String c = Utils.RegexReplaceSimbol(item.getJSONObject("content").getString("rendered"));
+                    // noticia.setContenido(c);
                     noticia.setCodigo(String.valueOf(item.getInt("id")));
                     noticia.setTitulo(item.getJSONObject("title").getString("rendered"));
-                    noticia.setContenido(c);
+                    noticia.setContenido(item.getJSONObject("content").getString("rendered"));
                     String date = Utils.dateFormater(item.getString("date"),"MMMM d, yyyy HH:mm:ss");
                     noticia.setFecha(date);
-                  //  noticia.setFecha("Fecha: "+item.getString("date").substring(0,16).replace("-","/").replace("T"," Hora: "));
                     noticia.setImagen("");
-                    //    noticia.setFecha(item.getJSONObject("_links").getJSONArray("self").getJSONObject(0).getString("href"));
                     noticiaList.add(noticia);
 
                 }
