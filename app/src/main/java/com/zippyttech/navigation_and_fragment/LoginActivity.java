@@ -250,10 +250,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(navigation);
             }
             else {
-                if(!pass.getText().toString().equals("")) user.setError("Error al ingresar el usuario");
-                else if(!user.getText().toString().equals("")) pass.setError("Error al ingresar la contraseña");
-                else Toast.makeText(this,"Ingrese usuario y/o contraseña",Toast.LENGTH_SHORT).show();
-                //
+                if(!pass.getText().toString().equals("") && !user.getText().toString().equals("")) {
+                    user.setError("Error al ingresar el usuario");
+                    pass.setError("Error al ingresar la contraseña");
+                } else
+                    Toast.makeText(this,"Ingrese usuario y/o contraseña",Toast.LENGTH_SHORT).show();
             }
         }
         else if(view.getId()==R.id.signInButton) {
