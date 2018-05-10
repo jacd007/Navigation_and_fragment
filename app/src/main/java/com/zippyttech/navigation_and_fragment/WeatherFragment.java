@@ -41,6 +41,8 @@ public class WeatherFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    //TODO: URL Variable declaration
+    String url_weather="http://api.openweathermap.org/data/2.5/forecast?id=524901&units=metric&APPID=44d8a60f7707ec918da8c1123c521ab1";
 
     private OnFragmentInteractionListener mListener;
 
@@ -148,7 +150,7 @@ public class WeatherFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            String  resp = call.callGet("http://api.openweathermap.org/data/2.5/forecast?id=524901&units=metric&APPID=44d8a60f7707ec918da8c1123c521ab1");
+            String  resp = call.callGet(url_weather);
           // String resp = call.callGet("http://api.openweathermap.org/data/2.5/weather?lat=7.7560392&lon=-72.2310149&APPID=44d8a60f7707ec918da8c1123c521ab1");
             return resp;
         }

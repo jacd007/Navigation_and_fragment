@@ -1,8 +1,10 @@
 package com.zippyttech.navigation_and_fragment;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -56,6 +58,7 @@ public class ListFragment extends Fragment {
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
     NoticiasDB noticiasDB;
+    private String url_news="https://lanacionweb.com/wp-json/wp/v2/posts";
 
 
     public ListFragment() {
@@ -184,6 +187,7 @@ public class ListFragment extends Fragment {
             dialog.setMessage("Cargando data de LA NACIÓN");
             dialog.setIndeterminate(true);
             dialog.show();
+          //  sendSyncNewsBroadCast(context);
         }
 
         @Override
@@ -193,7 +197,7 @@ public class ListFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            String  resp = call.callGet("https://lanacionweb.com/wp-json/wp/v2/posts");
+            String  resp = call.callGet(url_news);
             return resp;
         }
 
@@ -206,7 +210,8 @@ public class ListFragment extends Fragment {
             try {
                 JSONArray array = new JSONArray(resp);
                 List<Noticia> noticiaList = new ArrayList<>();
-
+                editor.putString("idMenor","0");
+                editor.commit();
 
 
                 for(int i=0; i<array.length(); i++) {
@@ -214,13 +219,19 @@ public class ListFragment extends Fragment {
                     Noticia noticia = new Noticia();
                    // String c = Utils.RegexReplaceSimbol(item.getJSONObject("content").getString("rendered"));
                     // noticia.setContenido(c);
-                    noticia.setCodigo(String.valueOf(item.getInt("id")));
+                    int id= Integer.parseInt(String.valueOf(item.getInt("id")));
+                    noticia.setCodigo(""+id);
+
                     noticia.setTitulo(item.getJSONObject("title").getString("rendered"));
                     noticia.setContenido(item.getJSONObject("content").getString("rendered"));
                     String date = Utils.dateFormater(item.getString("date"),"MMMM d, yyyy HH:mm:ss");
                     noticia.setFecha(date);
                     noticia.setImagen("");
                     noticiaList.add(noticia);
+
+                   // if (settings.getInt("idMenor")<id)
+                   //     editor.putInt("idMenor",id);
+
 
                 }
               noticiasDB.insertarNoticias(noticiaList);
@@ -252,6 +263,22 @@ public class ListFragment extends Fragment {
 
 
     }
+/*
+    private BroadcastReceiver br;
+    private IntentFilter ifilter;
+    @Override
+    public void onResume() {
+        ifilter = new IntentFilter();
+        ifilter.addAction(".android.syncNews");
+        super.onResume();
+    }
 
-
+    private void sendSyncNewsBroadCast(Context context) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(".android.syncNews");
+        broadcastIntent.putExtra("sn","true");
+      //  broadcastIntent.putExtra("sn_content", "Nueva noticia de LA NACION.");
+        context.sendBroadcast(broadcastIntent);
+    }
+*/
 }

@@ -1,9 +1,16 @@
 package com.zippyttech.navigation_and_fragment.common;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -214,4 +221,46 @@ public abstract class Utils {
 
         return (""+ aux +""+ val);
     }
+
+    /***
+     * call api generics *
+     */
+/*
+    public static class GetData extends AsyncTask<String,String,String> {
+        private ApiCall call;
+        private String URL;
+
+        public GetData(Context context, String url){
+            this.call = new ApiCall(context);
+            this.URL=url;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String  resp = call.callGet(URL);
+            return resp;
+        }
+
+
+        @Override
+        protected void onPostExecute(String resp) {
+            super.onPostExecute(resp);
+
+            try {
+                Log.i("NavigationActivity","hay");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+*/
+/***
+ * call api generics *
+ */
+
 }

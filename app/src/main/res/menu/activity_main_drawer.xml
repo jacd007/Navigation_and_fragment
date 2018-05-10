@@ -46,11 +46,7 @@
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_go"
                 android:title="Cerrar sesión" />
-            <item
 
-                android:id="@+id/nav_exit"
-                android:icon="@drawable/ic_go"
-                android:title="Salir. (Sin cerrar sesión)" />
         </menu>
     </item>
 

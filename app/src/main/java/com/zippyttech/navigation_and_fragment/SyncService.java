@@ -36,6 +36,10 @@ import static java.lang.Thread.sleep;
 
 public class SyncService extends Service {
     private final int TIME_SYNC = 5000;
+
+    private String url_weather="http://api.openweathermap.org/data/2.5/forecast?id=524901&units=metric&APPID=44d8a60f7707ec918da8c1123c521ab1";
+    private String url_news="https://lanacionweb.com/wp-json/wp/v2/posts";
+
     private ProgressDialog dialog;
 
     public static final String SHARED_KEY ="shared_key";
@@ -51,13 +55,7 @@ public class SyncService extends Service {
         super.onCreate();
         Log.i(TAG, "Creando servicio...");
 
-    }
 
-    private void sendBroadCast(Context context) {
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("NOMBRE_DE_NUESTRA_ACTION");
-        broadcastIntent.putExtra("parameter", "value");
-        context.sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class SyncService extends Service {
         Toast.makeText(SyncService.this, "Sync's Service start!", Toast.LENGTH_SHORT).show();
 
         try{
-                sendBroadCast(this);
+
             hilo hil = new hilo(this);
             hil.execute();
 
@@ -98,9 +96,10 @@ public class SyncService extends Service {
         @Override
         protected String doInBackground(String... strings) {
     try {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             publishProgress(strings);
             sleep(5000);
+
         }
     }
     catch (Exception e){
@@ -110,13 +109,20 @@ public class SyncService extends Service {
 
         }
 
+        private void sendBroadCast(Context context) {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction("es.androcode.android.mybroadcast");
+                   broadcastIntent.putExtra("parameter", "Nueva notificacion.");
+            context.sendBroadcast(broadcastIntent);
+        }
+
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-        //    noticiasDB.getList();
+          //  new Utils.GetData(context,url_news);
             throudNotificacion();
-
+            sendBroadCast(context);
         }
     }
 /*

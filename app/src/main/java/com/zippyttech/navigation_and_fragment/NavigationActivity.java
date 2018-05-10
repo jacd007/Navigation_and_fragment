@@ -45,6 +45,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.zippyttech.navigation_and_fragment.Models.Noticia;
 import com.zippyttech.navigation_and_fragment.common.PerfilFragment;
+import com.zippyttech.navigation_and_fragment.common.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class NavigationActivity extends AppCompatActivity
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private IntentFilter myFilter;
+    private String usu;
 
 
     @Override
@@ -84,7 +86,10 @@ public class NavigationActivity extends AppCompatActivity
        settings = getSharedPreferences(SHARED_KEY,0);
         editor = settings.edit();
 
+
+
         setFragment(0);
+
 
         this.googleApiClient = new GoogleApiClient
                 .Builder(this).enableAutoManage(this,this)
@@ -92,7 +97,7 @@ public class NavigationActivity extends AppCompatActivity
 
 
 
-
+        usu=settings.getString("UserName",null);
     }
 
 
@@ -157,6 +162,7 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("weather",false);
@@ -165,6 +171,7 @@ public class NavigationActivity extends AppCompatActivity
         if (id == R.id.nav_o1) {
            item.setChecked(true);
            drawer.closeDrawer(GravityCompat.START);
+
             getSupportActionBar().setTitle("Mi Perfil");
 
             setFragment(4);
@@ -194,8 +201,9 @@ public class NavigationActivity extends AppCompatActivity
             getSupportActionBar().setTitle("El Clima");
             drawer.closeDrawer(GravityCompat.START);
             setFragment(5);
-        } else if (id == R.id.nav_o6) {
-               // startService(new Intent(this, SyncService.class));
+        } else if (id == R.id.nav_o6) {/** Boton actualizar BD con notificacion */
+
+           // ListFragment.GetData getData = new ListFragment.GetData(ListFragment.GetData.class,);
             Notificacion();
 
         }else if (id == R.id.nav_logout) { /** CLEAR SHARED_PREFERENTS */
@@ -205,9 +213,6 @@ public class NavigationActivity extends AppCompatActivity
            Logout();
 
 
-        } else if (id == R.id.nav_exit) {/** EXIT*/
-
-            Toast.makeText(this, "Exit no disponible", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -254,18 +259,20 @@ String provider = settings.getString("providerLogin","");
         finish();
     }
     private BroadcastReceiver myReceiver;
+    private IntentFilter ifilter;
     @Override
     protected void onResume() {
         myFilter = new IntentFilter();
         myFilter.addAction("es.androcode.android.mybroadcast");
+      //  ifilter.addAction(".android.syncNews");
         myReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String myParam = intent.getExtras().getString("parameter");
                 if (myParam != null) {
-                    //Aquí ejecutais el método que necesiteis, por ejemplo actualizar //el número de notificaciones recibidas
-                    Toast.makeText(context, "VER..... "+myParam, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, myParam, Toast.LENGTH_LONG).show();
                 }
+
             }
         };
 
@@ -368,22 +375,19 @@ String provider = settings.getString("providerLogin","");
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void Notificacion(){
-
+        // notificacion para avisar de la sincronizacion con la bd de la nacion
         Intent intent = new Intent(this, NewMessageNotification.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
         Uri sonid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        // Build notification
-        // Actions are just fake
         Notification notif = new Notification.Builder(this)
-                .setContentTitle("NOTIFICACION x ")
-                .setContentText("Este es el contenido de una notificacion").setSmallIcon(R.drawable.ic_dolar_today)
+                .setContentTitle("Informacion")
+                .setContentText(getString(R.string.info_content_syncBD))
+                .setSmallIcon(R.drawable.ic_menu_slideshow)
                 .setContentIntent(pIntent)
                 .setSound(sonid)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // hide the notification after its selected
         notif.flags |= Notification.FLAG_AUTO_CANCEL;
-
         notificationManager.notify(0, notif);
     }
 

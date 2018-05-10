@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,7 +142,9 @@ public class DolarFragment extends Fragment implements View.OnClickListener {
                     }
 
                    String c= Utils.cientificMethod(rep);
-                resultado.setText(""+rep);
+        DecimalFormat dv = new DecimalFormat("#.00");
+
+                resultado.setText(""+dv.format(rep));
     }
 
     /**

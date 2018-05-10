@@ -146,5 +146,6 @@
         viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec
         tortor.
     </string>
+    <string name="info_content_syncBD">Se ha actualizado la base de datos de La Nación</string>
 
 </resources>
