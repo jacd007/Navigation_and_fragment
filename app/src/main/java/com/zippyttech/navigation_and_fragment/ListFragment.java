@@ -229,14 +229,15 @@ public class ListFragment extends Fragment {
                     noticia.setImagen("");
                     noticiaList.add(noticia);
 
-                   // if (settings.getInt("idMenor")<id)
-                   //     editor.putInt("idMenor",id);
 
 
                 }
+
+                //aqui guarda en la db
               noticiasDB.insertarNoticias(noticiaList);
                 editor.putBoolean("banderadb",true);
                 editor.commit();
+
                 if(UPDATE==0)
                    refreshCustomerList(noticiaList);
                 else
