@@ -1,10 +1,18 @@
 package com.zippyttech.navigation_and_fragment;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +29,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 
 /**
@@ -157,26 +167,57 @@ public class WeatherFragment extends Fragment {
 
 
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         protected void onPostExecute(String resp) {
             super.onPostExecute(resp);
             dialog.dismiss();
             try {
-                String clima;
+                String main="",tiemp="";
 
                     JSONObject item = new JSONObject(resp);
                     JSONArray list = item.getJSONArray("list");
-                    clima =  String.valueOf( list.getJSONObject(0).getJSONObject("main").getDouble("temp") );
 
-                  //  clima = String.valueOf( item.getJSONObject("main").getDouble("temp") );
+                     main =  String.valueOf( list.getJSONObject(0).getJSONObject("main").getDouble("temp") );
+               // Object z = list.getJSONObject(0).getJSONObject("weather");
 
-                    weather.setText("Temperatura es de: " + clima);
 
+                // JSONArray l = i.getJSONArray(0);
+                double v= Double.parseDouble(main);
+
+                    weather.setText("" + main+"°C");
+                    tiempo.setText("" + tiemp );
+                NotificacionWeather(v);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void NotificacionWeather(double value){
+        // notificacion para avisar de la sincronizacion con la bd de la nacion
+        Intent intent = new Intent(getContext(), NewMessageNotification.class);
+        PendingIntent pIntent = PendingIntent.getActivity(getContext(), (int) System.currentTimeMillis(), intent, 0);
+        Uri sonid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Notification notif = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            notif = new Notification.Builder(getContext())
+                    .setContentTitle("Clima Actual")
+                    //.setContentText(""+subcontent.substring(0,20))
+                    .setContentText(""+value+"°C")
+                    .setColor(1200)
+                    .setSmallIcon(R.drawable.ic_sunny)
+                    .setContentIntent(pIntent)
+                    .setSound(sonid)
+                    .build();
+        }
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+        notif.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(1, notif);
     }
 
 }

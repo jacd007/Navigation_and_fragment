@@ -182,8 +182,8 @@ public abstract class Utils {
         String   regex = "/^<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)$/";
 
 
-        if (values!=null){
-                values.replaceAll(regex, "");
+        if (values.isEmpty()){
+                values.replaceAll("\\<.*?>","");
             return values;
         }
         else return null;

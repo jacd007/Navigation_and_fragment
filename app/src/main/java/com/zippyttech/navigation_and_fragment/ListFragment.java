@@ -1,14 +1,21 @@
 package com.zippyttech.navigation_and_fragment;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +35,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 
 /**
@@ -87,23 +96,15 @@ public class ListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         GetData getData = new GetData(getContext(),0);
         getData.execute();
 
         setThisFragment();
 
-
-
         noticiasDB = new NoticiasDB(this);
         refreshCustomerList(noticiasDB.getList());
-
         ArrayList<Noticia> lista_noticia= null;
-
-
-
     }
-
 
     public void setThisFragment(){
         ((DrawerLocker) getActivity()).setDrawerEnabled(true);
@@ -124,8 +125,8 @@ public class ListFragment extends Fragment {
         editor = settings.edit();
 
         if(settings.getBoolean("banderadb",false)){
-            refreshCustomerList(noticiasDB.getList()); ;
-            Toast.makeText(this.getContext(),"Consultando Base de Datos...",Toast.LENGTH_SHORT).show();
+                refreshCustomerList(noticiasDB.getList());
+                Toast.makeText(this.getContext(), "Consultando Base de Datos...", Toast.LENGTH_SHORT).show();
         }
         else{
            GetData getData = new GetData(this.getContext(), 0);
@@ -133,13 +134,47 @@ public class ListFragment extends Fragment {
            // startService(new Intent(this.getContext(), SyncService.class));
             Toast.makeText(this.getContext(),"Consultando Servidor...",Toast.LENGTH_SHORT).show();
         }
-
-//
-//
 //       context.startService(new Intent(this.getContext(), SyncService.class));
-
         return v;
     }
+/** broadcast receiver del fragment de las noticias **/
+/*private BroadcastReceiver Receiver;
+private IntentFilter Filter;
+    @Override
+    public void onResume() {
+        Filter = new IntentFilter();
+        Filter.addAction("es.androcode.android.mybroadcast");
+        Receiver = new BroadcastReceiver() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String myParam = intent.getExtras().getString("parameter");
+                if (myParam != null) {
+                    SyncService.throudNotificacion();
+
+
+                }
+
+            }
+        };
+        //registerReceiver(Receiver, Filter);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+      //  unregisterReceiver(Receiver);
+        super.onPause();
+    }*/
+/*
+    private void send_br(Context context) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(".android.syncNews");
+        broadcastIntent.putExtra("sn","true");
+      //  broadcastIntent.putExtra("sn_content", "Nueva noticia de LA NACION.");
+        context.sendBroadcast(broadcastIntent);
+    }
+*/
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -203,6 +238,7 @@ public class ListFragment extends Fragment {
 
 
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         protected void onPostExecute(String resp) {
             super.onPostExecute(resp);
@@ -213,23 +249,29 @@ public class ListFragment extends Fragment {
                 editor.putString("idMenor","0");
                 editor.commit();
 
-
+                    int cont=0;
                 for(int i=0; i<array.length(); i++) {
                     JSONObject item = array.getJSONObject(i);
                     Noticia noticia = new Noticia();
-                   // String c = Utils.RegexReplaceSimbol(item.getJSONObject("content").getString("rendered"));
-                    // noticia.setContenido(c);
-                    int id= Integer.parseInt(String.valueOf(item.getInt("id")));
-                    noticia.setCodigo(""+id);
 
-                    noticia.setTitulo(item.getJSONObject("title").getString("rendered"));
-                    noticia.setContenido(item.getJSONObject("content").getString("rendered"));
-                    String date = Utils.dateFormater(item.getString("date"),"MMMM d, yyyy HH:mm:ss");
+                    String c = item.getJSONObject("content").getString("rendered"),
+                 //   String c = Utils.RegexReplaceSimbol(item.getJSONObject("content").getString("rendered")),
+                           t = item.getJSONObject("title").getString("rendered"),
+                           date = Utils.dateFormater(item.getString("date"),"MMMM d, yyyy HH:mm:ss");
+                    int id= Integer.parseInt(String.valueOf(item.getInt("id")));
+
+                    // noticia.setContenido(item.getJSONObject("content").getString("rendered"));
+                    noticia.setContenido(c);
+                    noticia.setCodigo(""+id);
+                    noticia.setTitulo(t);
                     noticia.setFecha(date);
                     noticia.setImagen("");
-                    noticiaList.add(noticia);
+                     noticiaList.add(noticia);
 
-
+                    if (cont<=id ){
+                        cont=id;
+                            NotificacionNews(t, String.valueOf(id), id);
+                    }
 
                 }
 
@@ -258,28 +300,32 @@ public class ListFragment extends Fragment {
                 //adapter = new RecyclerAdapter(listado, this, this);
                 adapter = new RecyclerAdapter(noticiaList,getContext(), (AppCompatActivity) getActivity());
                 recyclerView.setAdapter(adapter);
-
             }
             // else Toast.makeText(this,"hay algo",Toast.LENGTH_SHORT).show();
-
-
-    }
-/*
-    private BroadcastReceiver br;
-    private IntentFilter ifilter;
-    @Override
-    public void onResume() {
-        ifilter = new IntentFilter();
-        ifilter.addAction(".android.syncNews");
-        super.onResume();
     }
 
-    private void sendSyncNewsBroadCast(Context context) {
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(".android.syncNews");
-        broadcastIntent.putExtra("sn","true");
-      //  broadcastIntent.putExtra("sn_content", "Nueva noticia de LA NACION.");
-        context.sendBroadcast(broadcastIntent);
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void NotificacionNews(String title, String subcontent, int id){
+        // notificacion para avisar de la sincronizacion con la bd de la nacion
+        Intent intent = new Intent(getContext(), NewMessageNotification.class);
+        PendingIntent pIntent = PendingIntent.getActivity(getContext(), (int) System.currentTimeMillis(), intent, 0);
+        Uri sonid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Notification notif = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            notif = new Notification.Builder(getContext())
+                    .setContentTitle(""+title)
+                    //.setContentText(""+subcontent.substring(0,20))
+                    .setContentText("Referencia #"+subcontent)
+                    .setColor(255)
+                    .setSmallIcon(R.drawable.ic_newspaper)
+                    .setContentIntent(pIntent)
+                    .setSound(sonid)
+                    .build();
+        }
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+        notif.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(1, notif);
     }
-*/
+
 }

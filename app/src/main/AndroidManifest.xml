@@ -48,11 +48,10 @@
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                     <action android:name="es.androcode.android.mybroadcast"/>
-                <action android:name=".android.syncNews"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                    <action android:name=".android.syncNews"/>
             </intent-filter>
         </activity>
 

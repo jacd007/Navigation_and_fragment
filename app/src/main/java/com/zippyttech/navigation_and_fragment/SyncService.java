@@ -93,27 +93,28 @@ public class SyncService extends Service {
        this.context = context;
 
    }
+   public int V;
         @Override
         protected String doInBackground(String... strings) {
-    try {
-        for (int i = 0; i < 5; i++) {
-            publishProgress(strings);
-            sleep(5000);
+                try {
+                    for (int i = 0; i < 2; i++) {
+                        publishProgress(strings);
+                        sleep(5000);
+                        V=i;
+                    }
+                }
+                catch (Exception e){
 
-        }
-    }
-    catch (Exception e){
-
-    }
+                }
             return null;
-
         }
 
         private void sendBroadCast(Context context) {
             Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction("es.androcode.android.mybroadcast");
-                   broadcastIntent.putExtra("parameter", "Nueva notificacion.");
-            context.sendBroadcast(broadcastIntent);
+                broadcastIntent.setAction("es.androcode.android.mybroadcast");
+                broadcastIntent.putExtra("parameter", "Nueva notificacion.");
+                broadcastIntent.putExtra("iniciar", "true");
+                context.sendBroadcast(broadcastIntent);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -121,7 +122,7 @@ public class SyncService extends Service {
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
           //  new Utils.GetData(context,url_news);
-            throudNotificacion();
+            throudNotificacion(V);
             sendBroadCast(context);
         }
     }
@@ -176,7 +177,7 @@ public class SyncService extends Service {
 */
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void throudNotificacion(){
+    public void throudNotificacion(int cont){
 
         Intent intent = new Intent(this, SyncNotification.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
@@ -184,8 +185,8 @@ public class SyncService extends Service {
         // Build notification
         // Actions are just fake
         Notification noti = new Notification.Builder(this)
-                .setContentTitle("NOTIFICACION ")
-                .setContentText("Esta es una notificacion").setSmallIcon(R.drawable.ic_stat_sync)
+                .setContentTitle("NOTIFICACION")
+                .setContentText("Notificacion del sistema").setSmallIcon(R.drawable.ic_stat_sync)
                 .setContentIntent(pIntent)
                 .setSound(sonido)
                 .build();

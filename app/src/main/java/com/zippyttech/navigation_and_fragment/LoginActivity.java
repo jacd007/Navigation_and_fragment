@@ -21,10 +21,13 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -89,6 +92,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginButton.setReadPermissions("email");
         // If using in a fragment
         //loginButton.setFragment(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout,
+                (ViewGroup) findViewById(R.id.lytLayout));
+
+        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
 
         startService(new Intent(this, SyncService.class));
 

@@ -25,9 +25,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class NavigationActivity extends AppCompatActivity
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private IntentFilter myFilter;
     private String usu;
+    private int x=0;
 
 
     @Override
@@ -162,6 +165,7 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+          String msg="este es la prueba";
 
         int id = item.getItemId();
         SharedPreferences.Editor editor = settings.edit();
@@ -202,22 +206,40 @@ public class NavigationActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             setFragment(5);
         } else if (id == R.id.nav_o6) {/** Boton actualizar BD con notificacion */
-
+           /* Intent i = new Intent();
+            i.setAction("com.proyectosimio.BUTTON_RECEIVER");
+            sendBroadcast(i);*/
            // ListFragment.GetData getData = new ListFragment.GetData(ListFragment.GetData.class,);
-            Notificacion();
+            x++;
+           //  ViewToastInflate(msg);
+             NotificacionButton(x);
 
         }else if (id == R.id.nav_logout) { /** CLEAR SHARED_PREFERENTS */
-
           //  logOut();
            // revoke();
            Logout();
-
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void ViewToastInflate(String msg) {
+        //sirve para un toast personalizado
+        Toast toast3 = new Toast(getApplicationContext());
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout,
+                (ViewGroup) findViewById(R.id.lytLayout));
+
+        TextView txtMsg = (TextView)layout.findViewById(R.id.txtMensaje);
+        txtMsg.setText(""+msg);
+
+        toast3.setDuration(Toast.LENGTH_SHORT);
+        toast3.setView(layout);
+        toast3.show();
+
     }
 
     private void Logout() {
@@ -259,28 +281,25 @@ String provider = settings.getString("providerLogin","");
         finish();
     }
     private BroadcastReceiver myReceiver;
-    private IntentFilter ifilter;
+
     @Override
     protected void onResume() {
         myFilter = new IntentFilter();
         myFilter.addAction("es.androcode.android.mybroadcast");
-      //  ifilter.addAction(".android.syncNews");
         myReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String myParam = intent.getExtras().getString("parameter");
                 if (myParam != null) {
                     Toast.makeText(context, myParam, Toast.LENGTH_LONG).show();
+
+
                 }
 
             }
         };
-
         registerReceiver(myReceiver, myFilter);
-
     super.onResume();
-
-
     }
 
     @Override
@@ -373,22 +392,27 @@ String provider = settings.getString("providerLogin","");
 
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void Notificacion(){
+    public void NotificacionButton(int x){
         // notificacion para avisar de la sincronizacion con la bd de la nacion
         Intent intent = new Intent(this, NewMessageNotification.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
         Uri sonid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Notification notif = new Notification.Builder(this)
-                .setContentTitle("Informacion")
-                .setContentText(getString(R.string.info_content_syncBD))
-                .setSmallIcon(R.drawable.ic_menu_slideshow)
-                .setContentIntent(pIntent)
-                .setSound(sonid)
-                .build();
+        Notification notif = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            notif = new Notification.Builder(this)
+                    .setContentTitle("Informacion #"+x)
+                    .setContentText(getString(R.string.info_content_syncBD))
+                    .setSmallIcon(R.drawable.ic_go)
+                    .setColor(64)
+                    .setContentIntent(pIntent)
+                    .setSound(sonid)
+                    .build();
+        }
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notif.flags |= Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(0, notif);
+        notificationManager.notify(2, notif);
     }
 
 }
