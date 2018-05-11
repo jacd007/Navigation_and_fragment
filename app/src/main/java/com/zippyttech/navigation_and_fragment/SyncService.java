@@ -188,6 +188,8 @@ public class SyncService extends Service {
                 .setContentTitle("NOTIFICACION")
                 .setContentText("Notificacion del sistema").setSmallIcon(R.drawable.ic_stat_sync)
                 .setContentIntent(pIntent)
+                .setTicker("com.android.System.out")
+                .setContentInfo("0")
                 .setSound(sonido)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

@@ -318,6 +318,8 @@ private IntentFilter Filter;
                     //.setContentText(""+subcontent.substring(0,20))
                     .setContentText("Referencia #"+subcontent)
                     .setColor(255)
+                    .setTicker("Nueva Noticia...")
+                    .setContentInfo("2")
                     .setSmallIcon(R.drawable.ic_newspaper)
                     .setContentIntent(pIntent)
                     .setSound(sonid)

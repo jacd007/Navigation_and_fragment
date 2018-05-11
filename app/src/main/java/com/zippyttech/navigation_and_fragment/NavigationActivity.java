@@ -402,10 +402,12 @@ String provider = settings.getString("providerLogin","");
         Notification notif = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             notif = new Notification.Builder(this)
-                    .setContentTitle("Informacion #"+x)
-                    .setContentText(getString(R.string.info_content_syncBD))
+                    .setContentTitle("Informacion")
+                    .setContentText(""+getString(R.string.info_content_syncBD))
                     .setSmallIcon(R.drawable.ic_go)
                     .setColor(64)
+                    .setTicker("test...")
+                    .setContentInfo("#"+x)
                     .setContentIntent(pIntent)
                     .setSound(sonid)
                     .build();

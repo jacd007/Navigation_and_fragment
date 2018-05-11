@@ -206,10 +206,12 @@ public class WeatherFragment extends Fragment {
         Notification notif = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             notif = new Notification.Builder(getContext())
-                    .setContentTitle("Clima Actual")
+                    .setContentTitle("Clima Actual:")
                     //.setContentText(""+subcontent.substring(0,20))
                     .setContentText(""+value+"°C")
                     .setColor(1200)
+                    .setTicker("Clima "+value+"°c")
+                    .setContentInfo("4")
                     .setSmallIcon(R.drawable.ic_sunny)
                     .setContentIntent(pIntent)
                     .setSound(sonid)
