@@ -68,6 +68,8 @@ public class ListFragment extends Fragment {
     private SharedPreferences.Editor editor;
     NoticiasDB noticiasDB;
     private String url_news="https://lanacionweb.com/wp-json/wp/v2/posts";
+    private IntentFilter myFilter;
+    private BroadcastReceiver myReceiver;
 
 
     public ListFragment() {
@@ -95,14 +97,14 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        noticiasDB = new NoticiasDB(this.getContext());
         GetData getData = new GetData(getContext(),0);
         getData.execute();
 
         setThisFragment();
 
-        noticiasDB = new NoticiasDB(this);
-        refreshCustomerList(noticiasDB.getList());
+
+
         ArrayList<Noticia> lista_noticia= null;
     }
 
@@ -123,7 +125,7 @@ public class ListFragment extends Fragment {
 
         settings = this.getActivity().getSharedPreferences(SHARED_KEY,0);
         editor = settings.edit();
-
+        refreshCustomerList(noticiasDB.getList());
         if(settings.getBoolean("banderadb",false)){
                 refreshCustomerList(noticiasDB.getList());
                 Toast.makeText(this.getContext(), "Consultando Base de Datos...", Toast.LENGTH_SHORT).show();
@@ -136,6 +138,33 @@ public class ListFragment extends Fragment {
         }
 //       context.startService(new Intent(this.getContext(), SyncService.class));
         return v;
+    }
+
+public void refreshList(){
+       //todo: refresh list
+
+
+}
+   @Override
+    public void onResume() {
+        super.onResume();
+        myFilter = new IntentFilter();
+        myFilter.addAction("es.androcode.android.mybroadcast");
+
+        myReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int valor= intent.getExtras().getInt("iniciar");
+                String myParam = intent.getExtras().getString("parameter");
+                if (myParam != null) {
+                    //   Toast.makeText(context, myParam, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "se ha realizado el broadcast", Toast.LENGTH_LONG).show();
+                    refreshList();
+                }
+            }
+        };
+        getContext().registerReceiver(myReceiver, myFilter);
+
     }
 /** broadcast receiver del fragment de las noticias **/
 /*private BroadcastReceiver Receiver;
@@ -270,7 +299,7 @@ private IntentFilter Filter;
 
                     if (cont<=id ){
                         cont=id;
-                            NotificacionNews(t, String.valueOf(id), id);
+                            NotificacionNews(t, date, id);
                     }
 
                 }
@@ -293,9 +322,9 @@ private IntentFilter Filter;
 
     private void refreshCustomerList(List<Noticia> noticiaList) {
             if (noticiaList != null) {
+                layoutManager = new LinearLayoutManager(getContext());
                 recyclerView.setHasFixedSize(true);
                 // layoutManager = new LinearLayoutManager(this);
-                layoutManager = new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(layoutManager);
                 //adapter = new RecyclerAdapter(listado, this, this);
                 adapter = new RecyclerAdapter(noticiaList,getContext(), (AppCompatActivity) getActivity());
@@ -316,13 +345,15 @@ private IntentFilter Filter;
             notif = new Notification.Builder(getContext())
                     .setContentTitle(""+title)
                     //.setContentText(""+subcontent.substring(0,20))
-                    .setContentText("Referencia #"+subcontent)
+                    .setContentText("Fecha: "+subcontent)
                     .setColor(255)
                     .setTicker("Nueva Noticia...")
-                    .setContentInfo("2")
+                    .setContentIntent(pIntent)
+                    .setContentInfo("La Nación")
                     .setSmallIcon(R.drawable.ic_newspaper)
                     .setContentIntent(pIntent)
                     .setSound(sonid)
+                    .setAutoCancel(true)
                     .build();
         }
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);

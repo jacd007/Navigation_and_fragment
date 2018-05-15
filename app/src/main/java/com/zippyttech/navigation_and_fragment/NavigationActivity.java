@@ -66,6 +66,7 @@ public class NavigationActivity extends AppCompatActivity
     private IntentFilter myFilter;
     private String usu;
     private int x=0;
+    private String mail;
 
 
     @Override
@@ -84,8 +85,13 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        navUserName = (TextView) findViewById(R.id.nav_user_name);
-        navUserEmail = (TextView) findViewById(R.id.nav_email_user);
+
+        View headerView = navigationView.getHeaderView(0);
+       // TextView navUsername = (TextView) headerView.findViewById(R.id.navUsername);
+
+
+        navUserName = (TextView) headerView.findViewById(R.id.nav_user_name);
+        navUserEmail = (TextView) headerView.findViewById(R.id.nav_email_user);
        settings = getSharedPreferences(SHARED_KEY,0);
         editor = settings.edit();
 
@@ -100,7 +106,14 @@ public class NavigationActivity extends AppCompatActivity
 
 
 
-        usu=settings.getString("UserName",null);
+        usu=settings.getString("UserName","");
+        mail=settings.getString("EmailName","");
+    if(usu!=null) {
+        navUserName.setText(usu);
+    }
+    if (mail!=null){
+        navUserEmail.setText(mail);
+    }
     }
 
 
@@ -281,26 +294,28 @@ String provider = settings.getString("providerLogin","");
         finish();
     }
     private BroadcastReceiver myReceiver;
-
     @Override
     protected void onResume() {
+        super.onResume();
         myFilter = new IntentFilter();
         myFilter.addAction("es.androcode.android.mybroadcast");
+
         myReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                int valor= intent.getExtras().getInt("iniciar");
                 String myParam = intent.getExtras().getString("parameter");
                 if (myParam != null) {
-                    Toast.makeText(context, myParam, Toast.LENGTH_LONG).show();
-
-
+                 //   Toast.makeText(context, myParam, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "se ha realizado el broadcast", Toast.LENGTH_LONG).show();
                 }
-
             }
         };
         registerReceiver(myReceiver, myFilter);
-    super.onResume();
+
     }
+
+
 
     @Override
     protected void onPause() {
@@ -408,6 +423,7 @@ String provider = settings.getString("providerLogin","");
                     .setColor(64)
                     .setTicker("test...")
                     .setContentInfo("#"+x)
+                    .setContentIntent(pIntent)
                     .setContentIntent(pIntent)
                     .setSound(sonid)
                     .build();

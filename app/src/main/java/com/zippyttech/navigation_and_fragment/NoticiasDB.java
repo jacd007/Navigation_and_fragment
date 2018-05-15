@@ -2,13 +2,17 @@ package com.zippyttech.navigation_and_fragment;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import com.zippyttech.navigation_and_fragment.Models.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by zippyttech on 03/04/18.
@@ -20,6 +24,9 @@ public class NoticiasDB {
     private SQLiteDatabase db;
     private NoticiasSQLiteHelper helper;
     private NoticiasSQLiteHelper nsdbh;
+    private static final String SHARED_KEY = "shared_key";
+    private static SharedPreferences settings;
+    private static SharedPreferences.Editor editor;
 
     public NoticiasDB(Context context){
         this.context=context;
@@ -28,9 +35,7 @@ public class NoticiasDB {
         nsdbh =helper;
     }
 
-    public NoticiasDB(ListFragment listFragment) {
 
-    }
 
     public void fillDB(){
         /**Base de datos
@@ -83,17 +88,73 @@ public class NoticiasDB {
     /**
      * end Delete*/
 
+    public Cursor selectRows(String tableName, String[] projection, String where, String[] args, String sortOrder){
+
+        db = helper.getReadableDatabase();
+
+        Cursor c = db.query(
+                tableName,                                  // The table to query
+                projection,                                 // The columns to return
+                where,                                      // The columns for the WHERE clause
+                args,                                       // The values for the WHERE clause
+                null,                                       // don't group the rows
+                null,                                       // don't filter by row groups
+                sortOrder                                   // The sort order
+        );
+
+
+        return c;
+
+    }
+
+
+    public static void consulta(Context context) {
+      //  settings = context.getSharedPreferences(SHARED_KEY,0);
+      //  editor = settings.edit();
+     //   String sp= settings.getString("valor","33248");
+      NoticiasSQLiteHelper  conn = new NoticiasSQLiteHelper(context, "DBNoticias", null, 1);
+        String RES="";
+      try{
+            SQLiteDatabase db = conn.getReadableDatabase();
+           // String [] parametros = {sp};
+          String [] parametros = {"33250"};
+            String [] campos = {"codigo","titulo"};
+            Cursor c = db.query("Noticia",campos,"codigo"+"=? ",parametros,null,null,null);
+            c.moveToFirst();
+            String sp = c.getString(0);
+            c.close();
+
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),"El documento no existe",Toast.LENGTH_LONG).show();
+
+        }
+
+
+
+
+    }
+
+
     /**
      * Insert NoticiasDB*/
-    public void insertContenido (com.zippyttech.navigation_and_fragment.Models.Noticia noticia){
-        db.execSQL("INSERT INTO Noticia (codigo, titulo, contenido, fecha, imagen) "
-                + "VALUES (" + noticia.getCodigo()
-                + ", '"  + noticia.getTitulo()
-                + "', '" + noticia.getContenido()
-                + "', '" + noticia.getFecha()
-                + "', '" + noticia.getImagen()
-                + "')");
-        //   return;
+    public void  insertContenido (com.zippyttech.navigation_and_fragment.Models.Noticia noticia){
+        db = helper.getReadableDatabase();
+      try {
+
+          ContentValues reg = new ContentValues();
+          reg.put("codigo",noticia.getCodigo());
+          reg.put("titulo",noticia.getTitulo());
+          reg.put("contenido",noticia.getContenido());
+          reg.put("fecha",noticia.getFecha());
+          reg.put("imagen",noticia.getImagen());
+
+       db.insert("Noticia",null,reg);
+          //   return;
+      }
+      catch (Exception e){
+          e.printStackTrace();
+
+      }
     }
 
     public void insertarNoticias( List<com.zippyttech.navigation_and_fragment.Models.Noticia> lista){
@@ -130,8 +191,12 @@ public class NoticiasDB {
             if (c.moveToFirst()) {
 
                 do {
+                    settings = context.getSharedPreferences(SHARED_KEY,0);
+                    editor = settings.edit();
 
                     String codigo = c.getString(0);
+                    editor.putString("valor", codigo);
+                    editor.commit();
                     String titulo = c.getString(1);
                     String contenido = c.getString(2);
                     String fecha = c.getString(3);

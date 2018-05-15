@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class NoticiasSQLiteHelper extends SQLiteOpenHelper {
 
-    //Sentencia SQL para crear la tabla de Usuarios
-    String sqlCreate = "CREATE TABLE Noticia (codigo TEXT, titulo TEXT, contenido TEXT, fecha INTEGER, imagen TEXT)";
+    //Sentencia SQL para crear la tabla de Noticias
+     String sqlCreate = "CREATE TABLE Noticia (codigo TEXT, titulo TEXT, contenido TEXT, fecha INTEGER, imagen TEXT)";
 
 
     public NoticiasSQLiteHelper(Context context, String tituloNoticia,

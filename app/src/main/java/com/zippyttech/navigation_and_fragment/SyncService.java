@@ -9,6 +9,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.zippyttech.navigation_and_fragment.Models.Noticia;
+import com.zippyttech.navigation_and_fragment.Models.NoticiasSQLiteHelper;
 import com.zippyttech.navigation_and_fragment.common.ApiCall;
 import com.zippyttech.navigation_and_fragment.common.Utils;
 
@@ -97,10 +100,13 @@ public class SyncService extends Service {
         @Override
         protected String doInBackground(String... strings) {
                 try {
+
+
                     for (int i = 0; i < 2; i++) {
-                        publishProgress(strings);
-                        sleep(5000);
+                      //  publishProgress(strings);
+
                         V=i;
+                        sleep(5000);
                     }
                 }
                 catch (Exception e){
@@ -113,7 +119,6 @@ public class SyncService extends Service {
             Intent broadcastIntent = new Intent();
                 broadcastIntent.setAction("es.androcode.android.mybroadcast");
                 broadcastIntent.putExtra("parameter", "Nueva notificacion.");
-                broadcastIntent.putExtra("iniciar", "true");
                 context.sendBroadcast(broadcastIntent);
         }
 
@@ -121,60 +126,52 @@ public class SyncService extends Service {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
+
           //  new Utils.GetData(context,url_news);
-            throudNotificacion(V);
+
+          //  sendBroadCast(context);
+           // throudNotificacion(V);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+           consulta(context);
             sendBroadCast(context);
+            throudNotificacion(V);
         }
     }
-/*
-    public class GetData extends AsyncTask<String,String,String> {
-        private ApiCall call;
-        public GetData(Context context){
-            this.call = new ApiCall(context);
 
-        }
+    private void consulta(Context context) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+        NoticiasDB db = new NoticiasDB(this);
+        String [] parametros = {"33250"};
+        String [] campos = {"codigo","titulo"};
+       Cursor c= db.selectRows("Noticia",campos,null,null,null);
+      if( c.moveToFirst()) {
+          Log.w("Sync", c.getString(0));
+      }
+           /* NoticiasSQLiteHelper  conn = new NoticiasSQLiteHelper(context, "DBNoticias", null, 1);
+            String RES="";
+            try{
+                SQLiteDatabase db = conn.getReadableDatabase();
+                String [] parametros = {"33250"};
+                String [] campos = {"codigo","titulo"};
+                Cursor c = db.query("Noticia",campos,"codigo"+"=? ",parametros,null,null,null);
+                c.moveToFirst();
+                String sp = c.getString(0);
+                c.close();
 
-        @Override
-        protected String doInBackground(String... strings) {
-            String  resp = call.callGet("https://lanacionweb.com/wp-json/wp/v2/posts");
-            return resp;
-        }
+            }catch (Exception e){
+                Toast.makeText(context,"El documento no existe",Toast.LENGTH_LONG).show();
 
-
-
-        @Override
-        protected void onPostExecute(String resp) {
-            super.onPostExecute(resp);
-            dialog.dismiss();
-            try {
-                JSONArray array = new JSONArray(resp);
-                List<Noticia> noticiaList = new ArrayList<>();
-
-
-
-                for(int i=0; i<array.length(); i++) {
-                    JSONObject item = array.getJSONObject(i);
-                    Noticia noticia = new Noticia();
-                    // String ;
-                    String idNotification = String.valueOf(item.getInt("id")),
-                           contenidoNotification = item.getJSONObject("content").getString("rendered").substring(0,50),
-                           tituloNotification = item.getJSONObject("title").getString("rendered").substring(0,20);
-
-                }
-                noticiasDB.insertarNoticias(noticiaList);
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-        }
+
+            */
     }
-*/
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void throudNotificacion(int cont){
@@ -188,7 +185,7 @@ public class SyncService extends Service {
                 .setContentTitle("NOTIFICACION")
                 .setContentText("Notificacion del sistema").setSmallIcon(R.drawable.ic_stat_sync)
                 .setContentIntent(pIntent)
-                .setTicker("com.android.System.out")
+                .setTicker("Iniciando servicio")
                 .setContentInfo("0")
                 .setSound(sonido)
                 .build();

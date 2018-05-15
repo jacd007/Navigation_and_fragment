@@ -5,14 +5,15 @@
     tools:context="com.zippyttech.navigation_and_fragment.WeatherFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
+    
         <ImageView
             android:id="@+id/image_flat_weather"
             android:layout_width="100dp"
             android:layout_height="100dp"
            android:layout_gravity="top|center"
+            android:foregroundGravity="center"
             android:src="@drawable/ic_sunny"/>
-
+   
         <TextView
             android:id="@+id/weather"
             android:layout_width="match_parent"
@@ -29,14 +30,6 @@
         android:text="other"
         android:textAlignment="center"
         android:layout_marginTop="145sp"
-        android:textSize="15sp"/>
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="description"
-        android:textAlignment="center"
-        android:layout_marginTop="165sp"
         android:textSize="15sp"/>
 
 </FrameLayout>

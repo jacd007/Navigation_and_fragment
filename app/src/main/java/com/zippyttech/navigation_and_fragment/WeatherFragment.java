@@ -5,8 +5,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,7 +21,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.awareness.state.Weather;
 import com.zippyttech.navigation_and_fragment.common.ApiCall;
@@ -47,7 +53,8 @@ public class WeatherFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private TextView weather,tiempo;
+    private TextView weather,tiempo,descripcion;
+    private ImageView image;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -55,6 +62,9 @@ public class WeatherFragment extends Fragment {
     String url_weather="http://api.openweathermap.org/data/2.5/forecast?id=524901&units=metric&APPID=44d8a60f7707ec918da8c1123c521ab1";
 
     private OnFragmentInteractionListener mListener;
+    private IntentFilter Filter;
+    private int imagen;
+
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -103,6 +113,8 @@ public class WeatherFragment extends Fragment {
 
         weather = (TextView) view.findViewById(R.id.weather);
         tiempo = (TextView) view.findViewById(R.id.time);
+        descripcion = (TextView) view.findViewById(R.id.description);
+        image = (ImageView) view.findViewById(R.id.image_flat_weather);
 
         return view;
     }
@@ -173,20 +185,35 @@ public class WeatherFragment extends Fragment {
             super.onPostExecute(resp);
             dialog.dismiss();
             try {
-                String main="",tiemp="";
+                String main="",tiemp="",desc="";
 
                     JSONObject item = new JSONObject(resp);
                     JSONArray list = item.getJSONArray("list");
 
                      main =  String.valueOf( list.getJSONObject(0).getJSONObject("main").getDouble("temp") );
-               // Object z = list.getJSONObject(0).getJSONObject("weather");
-
+               JSONObject z =  list.getJSONObject(0) ;
+               list = z.getJSONArray("weather");
+               tiemp =  list.getJSONObject(0).getString("main") ;
+                desc = list.getJSONObject(0).getString("description");
 
                 // JSONArray l = i.getJSONArray(0);
                 double v= Double.parseDouble(main);
 
                     weather.setText("" + main+"°C");
                     tiempo.setText("" + tiemp );
+                    descripcion.setText("" + desc);
+                if (tiemp.compareTo("Clear")==0){
+                    image.setImageResource(R.drawable.sunny);
+                    imagen = R.drawable.sunny;
+                }
+                if (tiemp.compareTo("Clouds")==0){
+                    image.setImageResource(R.drawable.cloud);
+                    imagen = R.drawable.cloud;
+                }
+                if (tiemp.compareTo("Rain")==0){
+                    image.setImageResource(R.drawable.rain);
+                    imagen = R.drawable.rain;
+                }
                 NotificacionWeather(v);
 
             } catch (JSONException e) {
@@ -195,25 +222,45 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    private BroadcastReceiver Receiver;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void NotificacionWeather(double value){
+    public void NotificacionWeather(double value ){
         // notificacion para avisar de la sincronizacion con la bd de la nacion
         Intent intent = new Intent(getContext(), NewMessageNotification.class);
-        PendingIntent pIntent = PendingIntent.getActivity(getContext(), (int) System.currentTimeMillis(), intent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(this.getContext(), (int) System.currentTimeMillis(), intent, 0);
         Uri sonid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notif = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             notif = new Notification.Builder(getContext())
-                    .setContentTitle("Clima Actual:")
+                    .setContentTitle("El Clima Actual...")
                     //.setContentText(""+subcontent.substring(0,20))
                     .setContentText(""+value+"°C")
                     .setColor(1200)
-                    .setTicker("Clima "+value+"°c")
-                    .setContentInfo("4")
+                    .setTicker("El Clima es: "+value+"°c")
+                    .setContentInfo("Weather")
+                    .setContentIntent(pIntent)
                     .setSmallIcon(R.drawable.ic_sunny)
                     .setContentIntent(pIntent)
+                    .setAutoCancel(true)
                     .setSound(sonid)
                     .build();
         }
