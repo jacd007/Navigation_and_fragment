@@ -139,7 +139,7 @@ public class SyncService extends Service {
             super.onPostExecute(s);
            consulta(context);
             sendBroadCast(context);
-            throudNotificacion(V);
+           // throudNotificacion(V);
         }
     }
 
